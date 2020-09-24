@@ -37,3 +37,10 @@ void Add(vector<float>& v, vector<float> v1) {
 		v[i] += v1[i];
 	}
 }
+
+// no return value, result directly applies to the input vector
+void LeakyRelu(vector<float>& v) {
+	for (int i = 0; i < v.size(); i++) {
+		v[i] = v[i] * (v[i] > 0) + 0.1 * v[i] * (v[i] < 0);
+	}
+}

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-/*
+
 // matrix multiplication test
 
 int main() {
@@ -12,4 +12,3 @@ int main() {
 	for (float i : r) printf("%f ", i);
 	printf("\n");
 }
-*/

@@ -1,6 +1,8 @@
 #include "MLP.h"
 #include"Matrix.h"
 
+// ========================= MLP ============================
+
 MLP::MLP() {
 
 	in_size = 1; // scalar input
@@ -50,6 +52,7 @@ vector<float> MLP::run(vector<float> in_data) {
 
 	result = Multiply(matrix, hidden_size[0], in_data.size(), in_data);
 	Add(result, biases);
+	LeakyRelu(result);
 
 	// intermediate layers 
 	for (int i = 0; i < hidden_num - 1; i++) { // (hidden_i -> hiddden_i+1)
@@ -62,6 +65,7 @@ vector<float> MLP::run(vector<float> in_data) {
 
 		result = Multiply(matrix, hidden_size[i + 1], hidden_size[i], result);
 		Add(result, biases);
+		LeakyRelu(result);
 
 	}
 
@@ -75,6 +79,30 @@ vector<float> MLP::run(vector<float> in_data) {
 	result = Multiply(matrix, out_size, hidden_size[hidden_num - 1], result);
 	Add(result, biases);
 
-
 	return result;
+}
+
+
+// ========================= CEM ============================
+
+CEM::CEM() {
+	n_iter = 200;
+	batch_size = 30;
+	elite_frac = 0.3;
+	ini_std = 1.0;
+}
+
+CEM::CEM(int n, int bs, float ef, float ini_s) {
+	n_iter = n;
+	batch_size = bs;
+	elite_frac = ef;
+	ini_std = ini_s;
+}
+
+void CEM::train(MLP& network) {
+	vector<float> p_mean(network.policy_size, 0.0f); // the mean of each parameter
+	vector<float> p_std(network.policy_size, ini_std); // the standard deviation of each parameter
+	for (int i = 0; i < n_iter; i++) {
+		// train
+	}
 }
