@@ -50,7 +50,7 @@ void LeakyRelu(vector<float>& v) {
 
 
 float NormalDistribution(float mean, float standard_deviation) {
-	srand(time(NULL));
+	//srand(time(NULL));
 	float v1 = (static_cast <float> (rand()) + 1.0f) / (static_cast <float> (RAND_MAX) + 1.0f);
 	float v2 = (static_cast <float> (rand()) + 1.0f) / (static_cast <float> (RAND_MAX) + 1.0f);
 	float normal_random = cos(2 * 3.14 * v2) * sqrt(-2. * log(v1));

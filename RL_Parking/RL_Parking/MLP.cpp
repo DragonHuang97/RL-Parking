@@ -74,7 +74,8 @@ vector<float> MLP::run(vector<float> in_data) {
 	}
 
 	// last layer (last hidden -> output)
-	m_start = m_end + hidden_size[hidden_num - 2];
+	if (hidden_num > 1) m_start = m_end + hidden_size[hidden_num - 2];
+	else m_start = m_end + hidden_size[0];
 	m_end = m_start + out_size * hidden_size[hidden_num - 1];
 
 	matrix = vector<float>(params.begin() + m_start, params.begin() + m_end);
@@ -126,21 +127,12 @@ void CEM::train(MLP& network) {
 
 		// train
 		for (int j = 0; j < batch_size; j++) {
-			/*
-			if (j == 17) {
-				printf("\n");
-			}*/
+
 			// sample a set of parameters
 			vector<float> sample_params;
 			for (int p = 0; p < network.policy_size; p++) {
-				/*
-				if (p == 737) {
-					printf("\n");
-				}*/
 				float sample = NormalDistribution(p_mean[p], p_std[p]);
 				sample_params.push_back(sample);
-				//cout << sample << endl;
-				//sample_params.push_back(NormalDistribution(p_mean[p], p_std[p]));
 			}
 
 			// evaluate the set of parameters
@@ -196,11 +188,13 @@ float MLP::reward(vector<float> prms) {
 	this->set_params(prms);
 	float rwd = 0.0f;
 	//some toy reward for testing 
-	for (int i = 0; i < 50; i++) {
-		vector<float> input = { (float)i };
+	for (int i = 0; i < 300; i++) {
+		vector<float> input = { (float)i / 50.0f };
 		vector<float> res = this->run(input);
-		float ref = exp(i);
+		//float ref = exp(i / 50.0f);
+		//float ref = sin(i / 50.0f);
+		float ref = 3 * (i / 50.0f) - 5;
 		rwd -= abs(res[0] - ref);
 	}
-	return rwd;
+	return rwd/300.0;
 }
