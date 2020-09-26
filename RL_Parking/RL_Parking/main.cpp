@@ -1,4 +1,6 @@
 #include"Matrix.h"
+#include"MLP.h"
+#include<iostream>
 
 using namespace std;
 
@@ -6,9 +8,12 @@ using namespace std;
 // matrix multiplication test
 
 int main() {
-	vector<float> m = { 1, 3, 2,5,-2,3,7,2,5,-4,1,3 };
-	vector<float> v = { -2,1,3,5 };
-	vector<float> r = Multiply(m, 3, 4, v);
-	for (float i : r) printf("%f ", i);
-	printf("\n");
+	MLP network(1, 1, {60, 60});
+	CEM optimizer;
+	optimizer.train(network);
+
+	/*
+	for (int i = 0; i < 30; i++) {
+		cout << NormalDistribution(0.0f, 1.0f) << endl;
+	}*/
 }

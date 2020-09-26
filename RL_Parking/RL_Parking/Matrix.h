@@ -1,6 +1,7 @@
 // Matrix related functions
 
 #include <vector>
+#include <ctime>
 
 using namespace std;
 
@@ -12,3 +13,6 @@ void Add(vector<float>& v, vector<float> v1);
 
 // Leaky Relu
 void LeakyRelu(vector<float>& v);
+
+// Normal Distribution
+float NormalDistribution(float mean, float standard_deviation);

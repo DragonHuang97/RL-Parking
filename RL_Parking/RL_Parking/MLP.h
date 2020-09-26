@@ -23,6 +23,9 @@ public:
 
 	vector<float> run(vector<float> input_data); // run the model
 
+	void set_params(vector<float> params); // specify the parameters
+
+	float reward(vector<float> params); // evaluate the network with the set of parameters
 };
 
 
@@ -34,13 +37,12 @@ private:
 	int batch_size;
 	float elite_frac;
 	float ini_std; // initial standard deviation
+	float noise_factor; // scaling factor of how much extra noise to add each iteration (noise_factor/iteration_number noise is added to std.dev.)
 
 public:
 	CEM(); // default CEM implementation
 	
-	CEM(int n_iter, int batch_size, float elite_frac, float ini_std); // customized CEM
+	CEM(int n_iter, int batch_size, float elite_frac, float ini_std, float noise_factor); // customized CEM
 
 	void train(MLP& network);
 };
-
-// ================================= reward ========================================
