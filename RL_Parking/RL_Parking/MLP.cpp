@@ -187,7 +187,7 @@ void CEM::train(MLP& network) {
 
 
 // ======================== reward ============================
-
+/**/
 float CEM::reward(MLP& network) {
 	//float rwd = 0.0f;
 	return run_task(network, state(car_start[0], car_start[1], car_start[2]), position(car_goal[0], car_goal[1]));
@@ -199,14 +199,14 @@ float CEM::reward(MLP& network) {
 	float rwd = 0.0f;
 	//some toy reward for testing 
 	for (int i = 0; i < 300; i++) {
-		vector<float> input = { (float)i / 50.0f };
+		vector<float> input = { (float)i/50 };
 		vector<float> res = network.run(input);
 		//float ref = exp(i / 50.0f);
-		//float ref = sin(i / 50.0f);
-		float ref = 3 * (i / 50.0f) - 5;
+		float ref = sin(i / 50.0f);
+		//float ref = (i)/3.0 - 5;
 		rwd -= abs(res[0] - ref);
-		ref = exp(i / 50.0f);
-		rwd -= abs(res[1] - ref);
+		//ref = exp(i / 50.0f);
+		//rwd -= abs(res[1] - ref);
 	}
 	return rwd/300.0;
 }
@@ -264,6 +264,5 @@ float run_task(MLP network, state init_state, position goal_pos) {
 	// final position reward
 	if (distance(ns.pos, goal_pos) < 20) reward += 1000;
 	if (distance(ns.pos, goal_pos) < 10 && a.v < 5) reward += 10000;
-
 	return reward;
 }
