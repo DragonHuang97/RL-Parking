@@ -1,6 +1,7 @@
 /* Neural Networks */
 
 #include<vector>
+#include"Matrix.h"
 
 using namespace std;
 
@@ -25,7 +26,6 @@ public:
 
 	void set_params(vector<float> params); // specify the parameters
 
-	float reward(vector<float> params); // evaluate the network with the set of parameters
 };
 
 
@@ -45,4 +45,13 @@ public:
 	CEM(int n_iter, int batch_size, float elite_frac, float ini_std, float noise_factor); // customized CEM
 
 	void train(MLP& network);
+
+	float reward(MLP& network); // evaluate the network with the set of parameters
 };
+
+
+// Car update
+state update_state(action action, state cur_state);
+
+// Task performance evaluation
+float run_task(MLP network, state init_state, position goal_pos);

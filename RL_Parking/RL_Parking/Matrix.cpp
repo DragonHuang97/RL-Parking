@@ -26,7 +26,8 @@ vector<float> Multiply(vector<float> m, int row, int column, vector<float> v) {
 	return result;
 }
 
-// no return value, addition result directly applies to the first vector
+// addition of two vectors
+// no return value, addition result directly applied to the first vector
 void Add(vector<float>& v, vector<float> v1) {
 
 	// input validity check
@@ -41,6 +42,7 @@ void Add(vector<float>& v, vector<float> v1) {
 	}
 }
 
+// apply the leaky relu function
 // no return value, result directly applies to the input vector
 void LeakyRelu(vector<float>& v) {
 	for (int i = 0; i < v.size(); i++) {
@@ -48,11 +50,46 @@ void LeakyRelu(vector<float>& v) {
 	}
 }
 
-
+// draw random number from normal distribution
 float NormalDistribution(float mean, float standard_deviation) {
-	//srand(time(NULL));
 	float v1 = (static_cast <float> (rand()) + 1.0f) / (static_cast <float> (RAND_MAX) + 1.0f);
 	float v2 = (static_cast <float> (rand()) + 1.0f) / (static_cast <float> (RAND_MAX) + 1.0f);
 	float normal_random = cos(2 * 3.14 * v2) * sqrt(-2. * log(v1));
 	return normal_random * standard_deviation + mean;
+}
+
+
+
+position::position() {
+	x = 0; y = 0;
+}
+position::position(float px, float py) {
+	x = px;
+	y = py;
+}
+
+
+state::state() {
+	pos = position(0.0f, 0.0f);
+	theta = 0.0f;
+}
+state::state(float px, float py, float ptheta) {
+	pos = position(px, py);
+	theta = ptheta;
+}
+
+
+action::action() {
+	v = 0;
+	omega = 0;
+}
+action::action(float pv, float pomega) {
+	v = pv;
+	omega = pomega;
+}
+
+float distance(position p1, position p2) {
+	float dx = p1.x - p2.x;
+	float dy = p1.y - p2.y;
+	return sqrt(dx * dx + dy * dy);
 }

@@ -1,9 +1,16 @@
 #include "MLP.h"
-#include"Matrix.h"
 #include"random"
 #include <queue>
 #include <utility>
 #include <iostream>
+
+extern float dt;
+extern float runtime;
+extern float v_max;
+extern float omega_max;
+
+extern float car_start[3]; // x, y, theta
+extern float car_goal[2];// x, y
 
 // ========================= MLP ============================
 
@@ -136,8 +143,8 @@ void CEM::train(MLP& network) {
 			}
 
 			// evaluate the set of parameters
-			float rwd = network.reward(sample_params);
-			//cout << rwd << endl;
+			network.set_params(sample_params);
+			float rwd = this->reward(network);
 			ranking.push(make_pair(rwd, sample_params));
 			
 		}
@@ -145,14 +152,11 @@ void CEM::train(MLP& network) {
 		// move the elite to a vector...
 		vector < pair<float, vector<float>> > elite;
 		for (int j = 0; j < n_elite; j++) { 
-			//mean_reward += ranking.top().first;
+			mean_reward += ranking.top().first;
 			elite.push_back(ranking.top());
 			ranking.pop();
 		}
 
-		for (auto e : elite) {
-			mean_reward += e.first;
-		}
 		mean_reward /= n_elite;
 
 		// recompute new mean
@@ -184,17 +188,82 @@ void CEM::train(MLP& network) {
 
 // ======================== reward ============================
 
-float MLP::reward(vector<float> prms) {
-	this->set_params(prms);
+float CEM::reward(MLP& network) {
+	//float rwd = 0.0f;
+	return run_task(network, state(car_start[0], car_start[1], car_start[2]), position(car_goal[0], car_goal[1]));
+}
+
+
+/*
+float CEM::reward(MLP& network) {
 	float rwd = 0.0f;
 	//some toy reward for testing 
 	for (int i = 0; i < 300; i++) {
 		vector<float> input = { (float)i / 50.0f };
-		vector<float> res = this->run(input);
+		vector<float> res = network.run(input);
 		//float ref = exp(i / 50.0f);
 		//float ref = sin(i / 50.0f);
 		float ref = 3 * (i / 50.0f) - 5;
 		rwd -= abs(res[0] - ref);
+		ref = exp(i / 50.0f);
+		rwd -= abs(res[1] - ref);
 	}
 	return rwd/300.0;
+}
+*/
+
+
+// Car update (return new state)
+state update_state(action action, state cur_state) {
+	state new_state;
+	// clip
+	if (action.v > v_max) action.v = v_max;
+	else if (action.v < -v_max) action.v = -v_max;
+	if (action.omega > omega_max) action.omega = omega_max;
+	else if (action.omega < -omega_max) action.omega = -omega_max;
+	// update position
+	new_state.pos.x = cur_state.pos.x + action.v * cos(cur_state.theta) * dt;
+	new_state.pos.y = cur_state.pos.y + action.v * sin(cur_state.theta) * dt;
+	// update orientation
+	new_state.theta = cur_state.theta + action.omega * dt;
+	return new_state;
+}
+
+// Task performance evaluation
+float run_task(MLP network, state init_state, position goal_pos) {
+	vector<state> state_list;
+	vector<action> action_list;
+
+	// task simulation
+	state cur_state = init_state;
+	state_list.push_back(cur_state);
+
+	float reward = 0.0f;
+	for (int i = 0; i< int(runtime/dt); i++) {
+		vector<float> input = { cur_state.pos.x, cur_state.pos.y, cur_state.theta, goal_pos.x, goal_pos.y };
+		vector<float> res = network.run(input);
+		action a(res[0], res[1]);
+		action_list.push_back(a);
+		cur_state = update_state(a, state_list.back()); // update current state
+		state_list.push_back(cur_state);
+	}
+
+	// performance evaluation
+	state cs, ns;
+	action a;
+	for (int i = 0; i < action_list.size(); i++) {
+		cs = state_list[i];
+		a = action_list[i];
+		ns = state_list[i + 1];
+		// distance penalty
+		reward -= distance(cs.pos, ns.pos);
+		// large velocity and rotation penalty
+		reward -= abs(a.omega);
+		reward -= abs(a.v);
+	}
+	// final position reward
+	if (distance(ns.pos, goal_pos) < 20) reward += 1000;
+	if (distance(ns.pos, goal_pos) < 10 && a.v < 5) reward += 10000;
+
+	return reward;
 }
