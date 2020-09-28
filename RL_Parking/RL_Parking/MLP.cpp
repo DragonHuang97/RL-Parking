@@ -112,14 +112,16 @@ CEM::CEM() {
 	elite_frac = 0.3f;
 	ini_std = 1.0f;
 	noise_factor = 1.0f;
+	print_rate = 10;
 }
 
-CEM::CEM(int n, int bs, float ef, float ini_s, float nf) {
+CEM::CEM(int n, int bs, float ef, float ini_s, float nf, int pr) {
 	n_iter = n;
 	batch_size = bs;
 	elite_frac = ef;
 	ini_std = ini_s;
 	noise_factor = nf;
+	print_rate = pr;
 }
 
 void CEM::train(MLP& network) {
@@ -181,7 +183,7 @@ void CEM::train(MLP& network) {
 		}
 
 		// log traing process
-		if ((i + 1) % 20 == 0 || i == 0) printf("Iter %i: mean reward: %6.3f\n", (i + 1), mean_reward);
+		if ((i + 1) % print_rate == 0 || i == 0) printf("Iter %i: mean reward: %6.3f\n", (i + 1), mean_reward);
 	}
 }
 
@@ -212,6 +214,10 @@ float CEM::reward(MLP& network) {
 }
 */
 
+
+
+
+// =================== task specific ==========================
 
 // Car update (return new state)
 state update_state(action action, state cur_state) {
@@ -256,13 +262,15 @@ float run_task(MLP network, state init_state, position goal_pos) {
 		a = action_list[i];
 		ns = state_list[i + 1];
 		// distance penalty
-		reward -= distance(cs.pos, ns.pos);
+		//reward -= distance(cs.pos, ns.pos);
 		// large velocity and rotation penalty
-		reward -= abs(a.omega);
-		reward -= abs(a.v);
+		//reward -= abs(a.omega);
+		//reward -= abs(a.v);
 	}
 	// final position reward
-	if (distance(ns.pos, goal_pos) < 20) reward += 1000;
-	if (distance(ns.pos, goal_pos) < 10 && a.v < 5) reward += 10000;
+	//if (distance(ns.pos, goal_pos) < 20) reward += 1000;
+	//if (distance(ns.pos, goal_pos) < 10 && a.v < 5) reward += 10000;
+	reward = -distance(ns.pos, goal_pos);
+	//if (distance(ns.pos, goal_pos) < 10 && a.v < 5) reward += 100;
 	return reward;
 }

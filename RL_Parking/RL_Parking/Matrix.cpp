@@ -60,8 +60,17 @@ float NormalDistribution(float mean, float standard_deviation) {
 
 
 
+vec3::vec3() {
+	x = 0.0f; y = 0.0f; z = 0.0f;
+}
+
+vec3::vec3(float px, float py, float pz) {
+	x = px; y = py; z = pz;
+}
+
+
 position::position() {
-	x = 0; y = 0;
+	x = 0.0f; y = 0.0f;
 }
 position::position(float px, float py) {
 	x = px;
@@ -78,15 +87,48 @@ state::state(float px, float py, float ptheta) {
 	theta = ptheta;
 }
 
+car_state::car_state() {
+	pos = position(0.0f, 0.0f);
+	v = 0.0f;
+	omega = 0.0f;
+	theta = 0.0f;
+	delta = 0.0f;
+}
+
+
+car_state::car_state(position pp, float pv, float po, float pt, float pd) {
+	pos = pp;
+	v = pv;
+	omega = po;
+	theta = pt;
+	delta = pd;
+}
+
 
 action::action() {
-	v = 0;
-	omega = 0;
+	v = 0.0f;
+	omega = 0.0f;
 }
+
 action::action(float pv, float pomega) {
 	v = pv;
 	omega = pomega;
 }
+
+
+
+
+car_action::car_action() {
+	accel = 0.0f; 
+	steer = 0.0f;
+}
+
+car_action::car_action(float acc, float st) {
+	accel = acc; 
+	steer = st;
+}
+
+
 
 float distance(position p1, position p2) {
 	float dx = p1.x - p2.x;

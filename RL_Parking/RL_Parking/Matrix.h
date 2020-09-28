@@ -17,14 +17,21 @@ void LeakyRelu(vector<float>& v);
 // normal distribution random number generator
 float NormalDistribution(float mean, float standard_deviation);
 
+struct vec3 {
+	float x;
+	float y;
+	float z;
 
+	vec3();
+	vec3(float x, float y, float z);
+};
 
 struct position {
 	float x;
 	float y;
 
 	position();
-	position(float px, float py);
+	position(float x, float y);
 };
 
 struct state {
@@ -33,7 +40,19 @@ struct state {
 
 	state();
 
-	state(float px, float py, float ptheta);
+	state(float x, float y, float theta);
+};
+
+struct car_state {
+	position pos;
+	float v;
+	float omega;
+	float theta;
+	float delta;
+
+	car_state();
+	
+	car_state(position position, float velocity, float omega, float theta, float delta);
 };
 
 struct action {
@@ -42,7 +61,16 @@ struct action {
 
 	action();
 
-	action(float pv, float pomega);
+	action(float v, float omega);
+};
+
+struct car_action {
+	float accel;
+	float steer;
+
+	car_action();
+
+	car_action(float acceleration, float steer);
 };
 
 float distance(position p1, position p2);

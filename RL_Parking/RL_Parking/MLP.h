@@ -38,11 +38,12 @@ private:
 	float elite_frac;
 	float ini_std; // initial standard deviation
 	float noise_factor; // scaling factor of how much extra noise to add each iteration (noise_factor/iteration_number noise is added to std.dev.)
+	int print_rate;
 
 public:
 	CEM(); // default CEM implementation
 	
-	CEM(int n_iter, int batch_size, float elite_frac, float ini_std, float noise_factor); // customized CEM
+	CEM(int n_iter, int batch_size, float elite_frac, float ini_std, float noise_factor, int print_rate); // customized CEM
 
 	void train(MLP& network);
 
