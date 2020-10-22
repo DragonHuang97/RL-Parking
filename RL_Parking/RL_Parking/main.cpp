@@ -7,7 +7,7 @@ float dt = 0.1f;
 float runtime = 8.0f;
 
 float car_start[3] = { -50.0f, 0.0f, 0.751f }; // x, y, theta
-float car_goal[2] = { 25.0f, 25.0f };// x, y
+float car_goal[2] = { 50.0f, 0.0f };// x, y
 
 float v_max = 80.0f;
 float omega_max = 3.14f;

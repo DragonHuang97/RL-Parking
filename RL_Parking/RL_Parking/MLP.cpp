@@ -215,8 +215,6 @@ float CEM::reward(MLP& network) {
 */
 
 
-
-
 // =================== task specific ==========================
 
 // Car update (return new state)
